@@ -1,0 +1,18 @@
+﻿#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Pawn.h"
+#include "BGPawn.generated.h"
+
+UCLASS()
+class BASEBALLGAME_API ABGPawn : public APawn
+{
+	GENERATED_BODY()
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	virtual void PossessedBy(AController* NewController) override;
+
+};
