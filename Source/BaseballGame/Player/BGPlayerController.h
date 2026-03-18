@@ -14,10 +14,16 @@ class BASEBALLGAME_API ABGPlayerController : public APlayerController
 public:
 	virtual void BeginPlay() override;
 
+	void SetChatMessageString(const FString& InChatMessageString);
+
+	void PrintChatMessageString(const FString& InChatMessageString);
+
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UBGChatInput> ChatInputWidgetClass;
 
 	UPROPERTY()
 	TObjectPtr<UBGChatInput> ChatInputWidgetInstance;
+
+	FString ChatMessageString;
 };

@@ -11,8 +11,10 @@ public class BaseballGame : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] 
 		{ 
 			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", 
+			
 			// UI
-			"UMG",});
+			"UMG","Slate", "SlateCore",
+		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
