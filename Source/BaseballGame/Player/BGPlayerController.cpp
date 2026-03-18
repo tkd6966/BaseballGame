@@ -1,10 +1,16 @@
 ﻿#include "BGPlayerController.h"
 #include "BaseBallGame/UI/BGChatInput.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "BaseballGame/BaseballGame.h"
 
 void ABGPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (IsLocalController() == false)
+	{
+		return;
+	}
 
 	FInputModeUIOnly InputModeUIOnly;
 	SetInputMode(InputModeUIOnly);
@@ -28,5 +34,5 @@ void ABGPlayerController::SetChatMessageString(const FString& InChatMessageStrin
 
 void ABGPlayerController::PrintChatMessageString(const FString& InChatMessageString)
 {
-	UKismetSystemLibrary::PrintString(this, ChatMessageString, true, true, FLinearColor::Red, 5.0f);
+	BaseballGameFunctionLibrary::MyPrintString(this, InChatMessageString, 10.f);
 }
