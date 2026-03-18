@@ -2,6 +2,7 @@
 #include "BaseBallGame/UI/BGChatInput.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "BaseballGame/BaseballGame.h"
+#include "EngineUtils.h"
 
 void ABGPlayerController::BeginPlay()
 {
@@ -29,10 +30,30 @@ void ABGPlayerController::SetChatMessageString(const FString& InChatMessageStrin
 {
 	ChatMessageString = InChatMessageString;
 
-	PrintChatMessageString(ChatMessageString);
+	if (IsLocalController() == true)
+	{
+		ServerRPCPrintChatMessageString(InChatMessageString);
+	}
 }
 
 void ABGPlayerController::PrintChatMessageString(const FString& InChatMessageString)
 {
 	BaseballGameFunctionLibrary::MyPrintString(this, InChatMessageString, 10.f);
+}
+
+void ABGPlayerController::ClientRPCPrintChatMessageString_Implementation(const FString& InChatMessageString)
+{
+	PrintChatMessageString(InChatMessageString);
+}
+
+void ABGPlayerController::ServerRPCPrintChatMessageString_Implementation(const FString& InChatMessageString)
+{
+	for (TActorIterator<ABGPlayerController> It(GetWorld()); It; ++It)
+	{
+		ABGPlayerController* BGPlayerController = *It;
+		if (IsValid(BGPlayerController) == true)
+		{
+			BGPlayerController->ClientRPCPrintChatMessageString(InChatMessageString);
+		}
+	}
 }

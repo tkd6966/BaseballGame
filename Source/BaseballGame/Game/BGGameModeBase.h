@@ -9,4 +9,6 @@ class BASEBALLGAME_API ABGGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void OnPostLogin(AController* NewPlayer) override;
 };
