@@ -3,6 +3,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "BaseballGame/BaseballGame.h"
 #include "EngineUtils.h"
+#include "Kismet/GameplayStatics.h"
+#include "BaseballGame/Game/BGGameModeBase.h"
 
 void ABGPlayerController::BeginPlay()
 {
@@ -48,12 +50,13 @@ void ABGPlayerController::ClientRPCPrintChatMessageString_Implementation(const F
 
 void ABGPlayerController::ServerRPCPrintChatMessageString_Implementation(const FString& InChatMessageString)
 {
-	for (TActorIterator<ABGPlayerController> It(GetWorld()); It; ++It)
+	AGameModeBase* GM = UGameplayStatics::GetGameMode(this);
+	if (IsValid(GM) == true)
 	{
-		ABGPlayerController* BGPlayerController = *It;
-		if (IsValid(BGPlayerController) == true)
+		ABGGameModeBase* BGGM = Cast<ABGGameModeBase>(GM);
+		if (IsValid(BGGM) == true)
 		{
-			BGPlayerController->ClientRPCPrintChatMessageString(InChatMessageString);
+			BGGM->PrintChatMessageString(this, InChatMessageString);
 		}
 	}
 }
