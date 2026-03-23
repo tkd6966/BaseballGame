@@ -1,4 +1,5 @@
 ﻿#include "BGPlayerController.h"
+#include "BGPlayerState.h"
 #include "BaseBallGame/UI/BGChatInput.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "BaseballGame/BaseballGame.h"
@@ -34,7 +35,13 @@ void ABGPlayerController::SetChatMessageString(const FString& InChatMessageStrin
 
 	if (IsLocalController() == true)
 	{
-		ServerRPCPrintChatMessageString(InChatMessageString);
+		ABGPlayerState* BGPS = GetPlayerState<ABGPlayerState>();
+		if (IsValid(BGPS) == true)
+		{
+			FString CombinedMessageString = BGPS->PlayerNameString + TEXT(": ") + InChatMessageString;
+
+			ServerRPCPrintChatMessageString(CombinedMessageString);
+		}
 	}
 }
 

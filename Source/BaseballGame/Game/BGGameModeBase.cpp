@@ -2,21 +2,28 @@
 #include "BGGameStateBase.h"
 #include "BaseballGame/Player/BGPlayerController.h"
 #include "EngineUtils.h"
+#include "BaseballGame/Player/BGPlayerState.h"
 
 void ABGGameModeBase::OnPostLogin(AController* NewPlayer)
 {
 	Super::OnPostLogin(NewPlayer);
 
-	ABGGameStateBase* BGGameStateBase = GetGameState<ABGGameStateBase>();
-	if (IsValid(BGGameStateBase) == true)
-	{
-		BGGameStateBase->MulticastRPCBroadcastLoginMessage(TEXT("XXXXXXX"));
-	}
-
 	ABGPlayerController* BGPlayerController = Cast<ABGPlayerController>(NewPlayer);
 	if (IsValid(BGPlayerController) == true)
 	{
 		AllPlayerControllers.Add(BGPlayerController);
+		
+		ABGPlayerState* BGPS = BGPlayerController->GetPlayerState<ABGPlayerState>();
+		if (IsValid(BGPS) == true)
+		{
+			BGPS->PlayerNameString = TEXT("Player") + FString::FromInt(AllPlayerControllers.Num());
+		}
+		
+		ABGGameStateBase* BGGameStateBase = GetGameState<ABGGameStateBase>();
+		if (IsValid(BGGameStateBase) == true)
+		{
+			BGGameStateBase->MulticastRPCBroadcastLoginMessage(BGPS->PlayerNameString);
+		}
 	}
 }
 
