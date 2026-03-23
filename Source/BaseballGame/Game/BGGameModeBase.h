@@ -23,6 +23,8 @@ public:
 	virtual void BeginPlay() override;
 
 	void PrintChatMessageString(ABGPlayerController* InChattingPlayerController, const FString& InChatMessageString);
+	
+	void IncreaseGuessCount(ABGPlayerController* InChattingPlayerController);
 
 protected:
 	FString SecretNumberString;

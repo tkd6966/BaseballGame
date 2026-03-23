@@ -128,6 +128,8 @@ void ABGGameModeBase::PrintChatMessageString(ABGPlayerController* InChattingPlay
 	if (IsGuessNumberString(GuessNumberString) == true)
 	{
 		FString JudgeResultString = JudgeResult(SecretNumberString, GuessNumberString);
+		
+		IncreaseGuessCount(InChattingPlayerController);
 		for (TActorIterator<ABGPlayerController> It(GetWorld()); It; ++It)
 		{
 			ABGPlayerController* BGPlayerController = *It;
@@ -148,5 +150,14 @@ void ABGGameModeBase::PrintChatMessageString(ABGPlayerController* InChattingPlay
 				BGPlayerController->ClientRPCPrintChatMessageString(InChatMessageString);
 			}
 		}
+	}
+}
+
+void ABGGameModeBase::IncreaseGuessCount(ABGPlayerController* InChattingPlayerController)
+{
+	ABGPlayerState* BGPS = InChattingPlayerController->GetPlayerState<ABGPlayerState>();
+	if (IsValid(BGPS) == true)
+	{
+		BGPS->CurrentGuessCount++;
 	}
 }
