@@ -6,6 +6,12 @@
 #include "EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "BaseballGame/Game/BGGameModeBase.h"
+#include "Net/UnrealNetwork.h"
+
+ABGPlayerController::ABGPlayerController()
+{
+	bReplicates = true;
+}
 
 void ABGPlayerController::BeginPlay()
 {
@@ -25,6 +31,15 @@ void ABGPlayerController::BeginPlay()
 		if (IsValid(ChatInputWidgetInstance) == true)
 		{
 			ChatInputWidgetInstance->AddToViewport();
+		}
+	}
+	
+	if (IsValid(NotificationTextWidgetClass) == true)
+	{
+		NotificationTextWidgetInstance = CreateWidget<UUserWidget>(this, NotificationTextWidgetClass);
+		if (IsValid(NotificationTextWidgetInstance) == true)
+		{
+			NotificationTextWidgetInstance->AddToViewport();
 		}
 	}
 }
@@ -48,6 +63,13 @@ void ABGPlayerController::SetChatMessageString(const FString& InChatMessageStrin
 void ABGPlayerController::PrintChatMessageString(const FString& InChatMessageString)
 {
 	BaseballGameFunctionLibrary::MyPrintString(this, InChatMessageString, 10.f);
+}
+
+void ABGPlayerController::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, NotificationText);
 }
 
 void ABGPlayerController::ClientRPCPrintChatMessageString_Implementation(const FString& InChatMessageString)

@@ -11,6 +11,8 @@ void ABGGameModeBase::OnPostLogin(AController* NewPlayer)
 	ABGPlayerController* BGPlayerController = Cast<ABGPlayerController>(NewPlayer);
 	if (IsValid(BGPlayerController) == true)
 	{
+		BGPlayerController->NotificationText = FText::FromString(TEXT("Connected to the game server."));
+		
 		AllPlayerControllers.Add(BGPlayerController);
 		
 		ABGPlayerState* BGPS = BGPlayerController->GetPlayerState<ABGPlayerState>();
