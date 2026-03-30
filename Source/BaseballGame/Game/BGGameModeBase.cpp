@@ -139,6 +139,9 @@ void ABGGameModeBase::PrintChatMessageString(ABGPlayerController* InChattingPlay
 			{
 				FString CombinedMessageString = InChatMessageString + TEXT(" -> ") + JudgeResultString;
 				BGPlayerController->ClientRPCPrintChatMessageString(CombinedMessageString);
+				
+				int32 StrikeCount = FCString::Atoi(*JudgeResultString.Left(1));
+				JudgeGame(InChattingPlayerController, StrikeCount);
 			}
 		}
 	}
@@ -161,5 +164,63 @@ void ABGGameModeBase::IncreaseGuessCount(ABGPlayerController* InChattingPlayerCo
 	if (IsValid(BGPS) == true)
 	{
 		BGPS->CurrentGuessCount++;
+	}
+}
+
+void ABGGameModeBase::ResetGame()
+{
+	SecretNumberString = GenerateSecretNumber();
+
+	for (const auto& BGPlayerController : AllPlayerControllers)
+	{
+		ABGPlayerState* BGPS = BGPlayerController->GetPlayerState<ABGPlayerState>();
+		if (IsValid(BGPS) == true)
+		{
+			BGPS->CurrentGuessCount = 0;
+		}
+	}
+}
+
+void ABGGameModeBase::JudgeGame(ABGPlayerController* InChattingPlayerController, int InStrikeCount)
+{
+	if (3 == InStrikeCount)
+	{
+		ABGPlayerState* BGPS = InChattingPlayerController->GetPlayerState<ABGPlayerState>();
+		for (const auto& BGPlayerController : AllPlayerControllers)
+		{
+			if (IsValid(BGPS) == true)
+			{
+				FString CombinedMessageString = BGPS->PlayerNameString + TEXT(" has won the game.");
+				BGPlayerController->NotificationText = FText::FromString(CombinedMessageString);
+
+				ResetGame();
+			}
+		}
+	}
+	else
+	{
+		bool bIsDraw = true;
+		for (const auto& BGPlayerController : AllPlayerControllers)
+		{
+			ABGPlayerState* BGPS = BGPlayerController->GetPlayerState<ABGPlayerState>();
+			if (IsValid(BGPS) == true)
+			{
+				if (BGPS->CurrentGuessCount < BGPS->MaxGuessCount)
+				{
+					bIsDraw = false;
+					break;
+				}
+			}
+		}
+
+		if (true == bIsDraw)
+		{
+			for (const auto& BGPlayerController : AllPlayerControllers)
+			{
+				BGPlayerController->NotificationText = FText::FromString(TEXT("Draw..."));
+
+				ResetGame();
+			}
+		}
 	}
 }
